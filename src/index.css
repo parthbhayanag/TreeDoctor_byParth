@@ -1,0 +1,28 @@
+@import "tailwindcss";
+
+/* Leaflet map styles - 100% Free, Zero API Keys Required */
+.leaflet-container {
+  background-color: #1c1917 !important;
+  font-family: inherit;
+}
+
+/* Elegant dark theme filter on open street map tiles */
+.map-style-dark .leaflet-tile {
+  filter: brightness(0.65) invert(100%) contrast(1.5) hue-rotate(200deg) saturate(0.35) brightness(0.85);
+}
+
+.map-style-street .leaflet-tile {
+  filter: none;
+}
+
+.map-style-satellite .leaflet-tile {
+  filter: brightness(0.95) contrast(1.05);
+}
+
+/* Custom Tree Pin pulsing animation */
+@keyframes ping {
+  75%, 100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}

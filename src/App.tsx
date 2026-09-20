@@ -19,6 +19,8 @@ import {
   Play,
   RotateCcw,
   PlusCircle,
+  Download,
+  FileText,
 } from 'lucide-react';
 
 export default function App() {
@@ -267,8 +269,18 @@ export default function App() {
             </button>
           </nav>
 
-          {/* Quick Demo & Reset Tools */}
+          {/* Quick Demo, README Download & Reset Tools */}
           <div className="flex items-center gap-2">
+            <a
+              href="/api/readme"
+              download="README.md"
+              title="Download full project README.md"
+              className="px-3 py-2 bg-stone-900 hover:bg-stone-800 text-stone-200 hover:text-emerald-400 border border-stone-800 hover:border-emerald-500/40 rounded-xl text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer shadow-sm"
+            >
+              <Download className="w-3.5 h-3.5 text-emerald-400" />
+              <span className="hidden sm:inline">README.md</span>
+            </a>
+
             <button
               onClick={handleStartDemo}
               className="px-3.5 py-2 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-stone-950 font-bold rounded-xl text-xs transition-all flex items-center gap-1.5 shadow-lg shadow-amber-500/20 cursor-pointer"

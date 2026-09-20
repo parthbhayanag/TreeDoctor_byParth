@@ -1,5 +1,6 @@
 import express from 'express';
 import path from 'path';
+import fs from 'fs';
 import { fileURLToPath } from 'url';
 import { GoogleGenAI } from '@google/genai';
 import { INITIAL_TREES, INITIAL_MUNICIPAL_ACTIONS } from './src/data/seedTrees.ts';
@@ -45,6 +46,17 @@ async function startServer() {
       treesCount: trees.length,
       actionsCount: municipalActions.length,
     });
+  });
+
+  // Downloadable README.md endpoint
+  app.get('/api/readme', (req, res) => {
+    const readmePath = path.join(process.cwd(), 'README.md');
+    if (fs.existsSync(readmePath)) {
+      res.setHeader('Content-Disposition', 'attachment; filename="README.md"');
+      res.setHeader('Content-Type', 'text/markdown; charset=UTF-8');
+      return res.sendFile(readmePath);
+    }
+    res.status(404).json({ error: 'README.md not found' });
   });
 
   // Get all monitored trees

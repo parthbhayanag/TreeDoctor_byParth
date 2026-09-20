@@ -8,6 +8,7 @@ import { MunicipalDashboard } from './components/MunicipalDashboard';
 import { TreeProfileModal } from './components/TreeProfileModal';
 import { AddTreeModal } from './components/AddTreeModal';
 import { HackathonWalkthrough } from './components/HackathonWalkthrough';
+import { PresentationModal } from './components/PresentationModal';
 import {
   Trees,
   MapPin,
@@ -21,6 +22,7 @@ import {
   PlusCircle,
   Download,
   FileText,
+  Presentation,
 } from 'lucide-react';
 
 export default function App() {
@@ -33,10 +35,11 @@ export default function App() {
   const [activeProfileTree, setActiveProfileTree] = useState<Tree | null>(null);
   const [scannerTargetTree, setScannerTargetTree] = useState<Tree | null>(null);
 
-  // Hackathon walkthrough state
+  // Hackathon walkthrough & Presentation modal state
   const [isDemoActive, setIsDemoActive] = useState<boolean>(false);
   const [demoStep, setDemoStep] = useState<number>(1);
   const [isAddTreeModalOpen, setIsAddTreeModalOpen] = useState<boolean>(false);
+  const [isPresentationOpen, setIsPresentationOpen] = useState<boolean>(false);
 
   // Fetch initial data from server
   const fetchTreesAndActions = async () => {
@@ -269,8 +272,27 @@ export default function App() {
             </button>
           </nav>
 
-          {/* Quick Demo, README Download & Reset Tools */}
+          {/* Quick Demo, Presentation & README Download & Reset Tools */}
           <div className="flex items-center gap-2">
+            <button
+              onClick={() => setIsPresentationOpen(true)}
+              title="Open 7-Slide Interactive Pitch Deck"
+              className="px-3 py-2 bg-emerald-950/80 hover:bg-emerald-900/90 text-emerald-300 hover:text-emerald-100 border border-emerald-800/60 hover:border-emerald-500 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-sm"
+            >
+              <Presentation className="w-3.5 h-3.5 text-emerald-400" />
+              <span className="hidden sm:inline">Pitch Deck</span>
+            </button>
+
+            <a
+              href="/api/presentation/pdf"
+              download="TreeDoctor_Pitch_Deck.pdf"
+              title="Direct download 7-Slide Pitch Deck in PDF format"
+              className="px-3 py-2 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 hover:text-emerald-100 border border-emerald-500/40 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-sm"
+            >
+              <Download className="w-3.5 h-3.5 text-emerald-400" />
+              <span>PDF</span>
+            </a>
+
             <a
               href="/api/readme"
               download="README.md"
@@ -312,6 +334,7 @@ export default function App() {
               setCurrentView('scan');
             }}
             onOpenDashboard={() => setCurrentView('dashboard')}
+            onOpenPresentation={() => setIsPresentationOpen(true)}
           />
         )}
 
@@ -419,6 +442,12 @@ export default function App() {
         isOpen={isAddTreeModalOpen}
         onClose={() => setIsAddTreeModalOpen(false)}
         onTreeAdded={handleTreeAdded}
+      />
+
+      {/* 7-Slide Pitch Deck Presentation Viewer & PDF Exporter */}
+      <PresentationModal
+        isOpen={isPresentationOpen}
+        onClose={() => setIsPresentationOpen(false)}
       />
 
       {/* Floating 3-Minute Hackathon Demo Tour Bar */}

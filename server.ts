@@ -59,6 +59,66 @@ async function startServer() {
     res.status(404).json({ error: 'README.md not found' });
   });
 
+  // Downloadable Presentation (.PPTX) endpoint
+  app.get('/api/presentation', async (req, res) => {
+    const pptxPath = path.join(process.cwd(), 'public', 'TreeDoctor_Presentation.pptx');
+    const rootPptxPath = path.join(process.cwd(), 'TreeDoctor_Presentation.pptx');
+    let targetPath = fs.existsSync(pptxPath) ? pptxPath : fs.existsSync(rootPptxPath) ? rootPptxPath : null;
+
+    if (!targetPath) {
+      try {
+        const { generatePresentation } = await import('./scripts/generate_presentation.ts');
+        targetPath = await generatePresentation(pptxPath);
+      } catch (err: any) {
+        console.error('Error generating presentation:', err);
+        return res.status(500).json({ error: 'Could not generate presentation', details: err.message });
+      }
+    }
+
+    try {
+      const stats = fs.statSync(targetPath);
+      res.setHeader('Content-Disposition', 'attachment; filename="TreeDoctor_Pitch_Deck.pptx"');
+      res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.presentationml.presentation');
+      res.setHeader('Content-Length', stats.size);
+      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+      const fileStream = fs.createReadStream(targetPath);
+      return fileStream.pipe(res);
+    } catch (streamErr: any) {
+      console.error('Error streaming presentation:', streamErr);
+      res.status(500).json({ error: 'Failed to stream presentation file' });
+    }
+  });
+
+  // Downloadable Presentation (.PDF) endpoint
+  app.get(['/api/presentation/pdf', '/api/presentation.pdf', '/api/pitch-deck.pdf'], async (req, res) => {
+    const pdfPath = path.join(process.cwd(), 'public', 'TreeDoctor_Pitch_Deck.pdf');
+    const rootPdfPath = path.join(process.cwd(), 'TreeDoctor_Pitch_Deck.pdf');
+    let targetPath = fs.existsSync(pdfPath) ? pdfPath : fs.existsSync(rootPdfPath) ? rootPdfPath : null;
+
+    if (!targetPath) {
+      try {
+        const { generatePdfPresentation } = await import('./scripts/generate_pdf.ts');
+        targetPath = await generatePdfPresentation(pdfPath);
+      } catch (err: any) {
+        console.error('Error generating PDF presentation:', err);
+        return res.status(500).json({ error: 'Could not generate PDF presentation', details: err.message });
+      }
+    }
+
+    try {
+      const stats = fs.statSync(targetPath);
+      res.setHeader('Content-Disposition', 'attachment; filename="TreeDoctor_Pitch_Deck.pdf"');
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader('Content-Length', stats.size);
+      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+      const fileStream = fs.createReadStream(targetPath);
+      return fileStream.pipe(res);
+    } catch (streamErr: any) {
+      console.error('Error streaming PDF presentation:', streamErr);
+      res.status(500).json({ error: 'Failed to stream PDF presentation file' });
+    }
+  });
+
   // Get all monitored trees
   app.get('/api/trees', (req, res) => {
     res.json({ trees });

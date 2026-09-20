@@ -12,7 +12,6 @@ import {
   Truck,
   HeartHandshake,
   CheckCircle2,
-  Download,
 } from 'lucide-react';
 import { Tree } from '../types';
 
@@ -85,16 +84,6 @@ export const LandingView: React.FC<LandingViewProps> = ({
               3-Min Hackathon Demo Tour
               <ArrowRight className="w-4 h-4" />
             </button>
-
-            <a
-              href="/api/readme"
-              download="README.md"
-              className="px-5 py-3.5 bg-stone-900/90 hover:bg-stone-800 text-stone-300 hover:text-emerald-400 font-semibold rounded-2xl text-sm border border-stone-700/80 transition-all flex items-center gap-2 cursor-pointer"
-              title="Download project documentation & architecture guide"
-            >
-              <Download className="w-4 h-4 text-emerald-400" />
-              Download README.md
-            </a>
           </div>
 
           {/* Live Platform Proof Counters */}
